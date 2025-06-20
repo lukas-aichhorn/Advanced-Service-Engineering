@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analyseergebnis</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        h1 {
+            color: #0056b3;
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: #007bff;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        .result-section {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .result-item {
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        .result-item strong {
+            color: #333;
+        }
+        .positive {
+            color: red;
+            font-weight: bold;
+        }
+        .negative {
+            color: green;
+            font-weight: bold;
+        }
+        .info {
+            color: #555;
+            font-size: 0.9em;
+            margin-top: 20px;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 10px 20px;
+            background-color: #6c757d;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .back-link:hover {
+            background-color: #5a6268;
+        }
+        .uploaded-image-display {
+            max-width: 100%; /* Bild passt sich der Containerbreite an */
+            height: auto;
+            max-height: 400px; /* Maximale Höhe für das angezeigte Bild */
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            object-fit: contain; /* Bild wird skaliert, um in den Bereich zu passen */
+        }
+        /* Style for messages if models failed to load */
+        .error-message {
+            color: orange;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<header>
+    <center>
+        <p> ASE 2025 - Gruppe 1</p>
+    </center>
+</header>
+
+<body>
+    <div class="container">
+        <h1>Analyseergebnis der CNN-Modelle</h1>
+
+
+
+        {% if image_base64_uri %}
+            <img src="{{ image_base64_uri }}" alt="Hochgeladenes Röntgenbild" class="uploaded-image-display">
+        {% else %}
+            <p>Das hochgeladene Bild konnte nicht angezeigt werden.</p>
+        {% endif %}
+
+        <h2>Ergebnisse:</h2>
+
+        <div class="result-section">
+            <h3>Modell A</h3>
+            <div class="result-item">
+                {% if result_A.status == 'positiv' %}
+                    Status: <span class="positive">{{ result_A.status.capitalize() }}</span>
+                {% elif result_A.status == 'negativ' %}
+                    Status: <span class="negative">{{ result_A.status.capitalize() }}</span>
+                {% else %}
+                    Status: <span class="error-message">{{ result_A.status.capitalize() }}</span> ({{ result_A.message }})
+                {% endif %}
+            </div>
+            {% if result_A.status != 'Fehler' and result_A.status != 'nicht verfügbar' %}
+            <div class="result-item">
+                Wahrscheinlichkeit: <strong>{{ result_A.probability }}</strong> (für Lungenentzündung)
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="result-section">
+            <h3>Modell B</h3>
+            <div class="result-item">
+                {% if result_B.status == 'positiv' %}
+                    Status: <span class="positive">{{ result_B.status.capitalize() }}</span>
+                {% elif result_B.status == 'negativ' %}
+                    Status: <span class="negative">{{ result_B.status.capitalize() }}</span>
+                {% else %}
+                    Status: <span class="error-message">{{ result_B.status.capitalize() }}</span> ({{ result_B.message }})
+                {% endif %}
+            </div>
+            {% if result_B.status != 'Fehler' and result_B.status != 'nicht verfügbar' %}
+            <div class="result-item">
+                Wahrscheinlichkeit: <strong>{{ result_B.probability }}</strong> (für Lungenentzündung)
+            </div>
+            {% endif %}
+        </div>
+
+        <a href="/" class="back-link">Neues Bild analysieren</a>
+    </div>
+</body>
+</html>

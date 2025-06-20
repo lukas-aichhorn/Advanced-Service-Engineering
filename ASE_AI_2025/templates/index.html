@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lungenröntgenanalyse</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        h1 {
+            color: #0056b3;
+            margin-bottom: 30px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        input[type="file"] {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            width: 80%;
+            max-width: 300px;
+        }
+        input[type="submit"] {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        .flash-messages {
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+            color: red;
+            font-weight: bold;
+        }
+        .image-preview {
+            max-width: 100%; /* Bild passt sich der Containerbreite an */
+            height: auto;
+            max-height: 300px; /* Maximale Höhe für die Vorschau */
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            display: none; /* Standardmäßig versteckt, wird bei Bildauswahl sichtbar */
+            object-fit: contain; /* Bild wird skaliert, um in den Bereich zu passen */
+        }
+    </style>
+</head>
+
+<header>
+    <center>
+        <p> ASE 2025 - Gruppe 1</p>
+    </center>
+</header>
+
+<body>
+    <div class="container">
+        <h1>Lungenröntgenanalyse durch CNN</h1>
+        <p>Lade ein Lungenröntgenbild hoch, um es von zwei CNN-Modellen analysieren zu lassen.</p>
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul class="flash-messages">
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+
+        <form action="/upload" method="post" enctype="multipart/form-data">
+            <input type="file" name="file" accept="image/*" required onchange="previewImage(event)">
+            <img id="image-preview" src="#" alt="Bildvorschau" class="image-preview">
+            <input type="submit" value="Bild hochladen & analysieren">
+        </form>
+    </div>
+
+    <script>
+        // JavaScript-Funktion zur Anzeige der Bildvorschau
+        function previewImage(event) {
+            const reader = new FileReader(); // Erstellt ein FileReader-Objekt
+            reader.onload = function(){ // Wird aufgerufen, wenn die Datei gelesen wurde
+                const output = document.getElementById('image-preview'); // Holt das <img>-Element
+                output.src = reader.result; // Setzt die Quelle des Bildes auf die gelesene Datei (Data URL)
+                output.style.display = 'block'; // Macht das Bild sichtbar
+            };
+            // Liest die ausgewählte Datei als Data URL
+            if (event.target.files[0]) {
+                reader.readAsDataURL(event.target.files[0]);
+            } else {
+                // Wenn keine Datei ausgewählt ist, Bildvorschau verstecken
+                document.getElementById('image-preview').style.display = 'none';
+                document.getElementById('image-preview').src = '#';
+            }
+        }
+    </script>
+</body>
+</html>
